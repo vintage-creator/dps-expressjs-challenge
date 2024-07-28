@@ -27,3 +27,19 @@ export const getProjectById = (req: Request, res: Response) => {
 		res.status(500).json({ error: 'Failed to fetch project' });
 	}
 };
+
+export const createProject = (req: Request, res: Response) => {
+    const { name, description } = req.body;
+    if (!name || !description) {
+      return res.status(400).json({ error: 'Name and description are required' });
+    }
+  
+    try {
+      const sql = 'INSERT INTO Projects (name, description) VALUES (?, ?)';
+      const result = db.run(sql, [name, description]);
+      res.status(201).json({ id: result.lastInsertRowid, name, description });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to create project' });
+    }
+  };
+  
