@@ -73,3 +73,22 @@ export const getReportById = (req: Request, res: Response) => {
 		res.status(500).json({ error: 'Failed to fetch report' });
 	}
 };
+
+export const updateReport = (req: Request, res: Response) => {
+	const { id } = req.params;
+	const { text, projectid } = req.body;
+
+	if (!text || !projectid) {
+		return res
+			.status(400)
+			.json({ error: 'Text and projectId are required' });
+	}
+
+	try {
+		const sql = 'UPDATE Reports SET text = ?, projectid = ? WHERE id = ?';
+		db.run(sql, [text, projectid, id]);
+		res.status(200).json({ id, projectid, text });
+	} catch (error) {
+		res.status(500).json({ error: 'Failed to update report' });
+	}
+};
