@@ -47,16 +47,29 @@ export const createReport = (req: Request, res: Response) => {
 };
 
 export const deleteReport = (req: Request, res: Response) => {
-    const { id } = req.params;
-    try {
-      const sql = 'DELETE FROM Reports WHERE id = ?';
-      const result = db.run(sql, [id]);
-      if (result.changes === 0) {
-        return res.status(404).json({ error: 'Report not found' });
-      }
-      res.status(204).end();
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to delete report' });
-    }
-  };
-  
+	const { id } = req.params;
+	try {
+		const sql = 'DELETE FROM Reports WHERE id = ?';
+		const result = db.run(sql, [id]);
+		if (result.changes === 0) {
+			return res.status(404).json({ error: 'Report not found' });
+		}
+		res.status(204).end();
+	} catch (error) {
+		res.status(500).json({ error: 'Failed to delete report' });
+	}
+};
+
+export const getReportById = (req: Request, res: Response) => {
+	const { id } = req.params;
+	try {
+		const sql = 'SELECT * FROM Reports WHERE id = ?';
+		const report = db.query(sql, [id]);
+		if (!report) {
+			return res.status(404).json({ error: 'Report not found' });
+		}
+		res.json(report);
+	} catch (error) {
+		res.status(500).json({ error: 'Failed to fetch report' });
+	}
+};
