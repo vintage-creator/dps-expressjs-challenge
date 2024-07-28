@@ -29,17 +29,41 @@ export const getProjectById = (req: Request, res: Response) => {
 };
 
 export const createProject = (req: Request, res: Response) => {
-    const { name, description } = req.body;
-    if (!name || !description) {
-      return res.status(400).json({ error: 'Name and description are required' });
-    }
-  
-    try {
-      const sql = 'INSERT INTO Projects (name, description) VALUES (?, ?)';
-      const result = db.run(sql, [name, description]);
-      res.status(201).json({ id: result.lastInsertRowid, name, description });
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to create project' });
-    }
-  };
-  
+	const { name, description } = req.body;
+	if (!name || !description) {
+		return res
+			.status(400)
+			.json({ error: 'Name and description are required' });
+	}
+
+	try {
+		const sql = 'INSERT INTO Projects (name, description) VALUES (?, ?)';
+		const result = db.run(sql, [name, description]);
+		res.status(201).json({ id: result.lastInsertRowid, name, description });
+	} catch (error) {
+		res.status(500).json({ error: 'Failed to create project' });
+	}
+};
+
+export const updateProject = (req: Request, res: Response) => {
+	const { id } = req.params;
+	const { name, description } = req.body;
+
+	if (!name || !description) {
+		return res
+			.status(400)
+			.json({ error: 'Name and description are required' });
+	}
+
+	try {
+		const sql =
+			'UPDATE Projects SET name = ?, description = ? WHERE id = ?';
+		const result = db.run(sql, [name, description, id]);
+		if (result.changes === 0) {
+			return res.status(404).json({ error: 'Project not found' });
+		}
+		res.status(200).json({ id, name, description });
+	} catch (error) {
+		res.status(500).json({ error: 'Failed to update project' });
+	}
+};
