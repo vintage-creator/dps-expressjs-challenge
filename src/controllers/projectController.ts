@@ -67,3 +67,17 @@ export const updateProject = (req: Request, res: Response) => {
 		res.status(500).json({ error: 'Failed to update project' });
 	}
 };
+
+export const deleteProject = (req: Request, res: Response) => {
+    const { id } = req.params;
+    try {
+      const sql = 'DELETE FROM Projects WHERE id = ?';
+      const result = db.run(sql, [id]);
+      if (result.changes === 0) {
+        return res.status(404).json({ error: 'Project not found' });
+      }
+      res.status(204).end();
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to delete project' });
+    }
+  };
