@@ -11,3 +11,18 @@ export const getAllReports = (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to fetch reports' });
   }
 };
+
+export const getReportsByProjectId = (req: Request, res: Response) => {
+    const { projectId } = req.params;
+    try {
+      const sql = 'SELECT * FROM Reports WHERE projectid = ?';
+      const reports = db.query(sql, [projectId]);
+      if (!reports || reports.length === 0) {
+        return res.status(404).json({ error: 'Report not found' });
+      }
+      res.status(200).json(reports);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch reports' });
+    }
+  };
+  
