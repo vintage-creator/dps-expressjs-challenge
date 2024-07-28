@@ -2,6 +2,9 @@ import express, { Express, Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import { authenticate } from './middleware/authMiddleware';
+import projectRoutes from './routes/projectRoutes';
+import reportRoutes from './routes/reportRoutes';
+
 
 
 dotenv.config();
@@ -17,6 +20,16 @@ const initializeMiddleware = (app: Express) => {
   app.use(authenticate); 
 };
 
+// Route initialization
+const initializeRoutes = (app: Express) => {
+  app.use('/api/projects', projectRoutes);
+  app.use('/api/reports', reportRoutes);
+
+  app.use('*', (req: Request, res: Response) => {
+    res.status(404).json({ error: 'Oops! API Endpoint not found.' });
+  });
+};
+
 // Error handling middleware
 const initializeErrorHandling = (app: Express) => {
   app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
@@ -26,6 +39,7 @@ const initializeErrorHandling = (app: Express) => {
 };
 
 initializeMiddleware(app);
+initializeRoutes(app);
 initializeErrorHandling(app);
 
 
