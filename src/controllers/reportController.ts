@@ -45,3 +45,18 @@ export const createReport = (req: Request, res: Response) => {
 		res.status(500).json({ error: 'Failed to create report' });
 	}
 };
+
+export const deleteReport = (req: Request, res: Response) => {
+    const { id } = req.params;
+    try {
+      const sql = 'DELETE FROM Reports WHERE id = ?';
+      const result = db.run(sql, [id]);
+      if (result.changes === 0) {
+        return res.status(404).json({ error: 'Report not found' });
+      }
+      res.status(204).end();
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to delete report' });
+    }
+  };
+  

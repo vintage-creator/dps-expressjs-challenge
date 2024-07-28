@@ -6,6 +6,8 @@ const router = Router();
 router.get('/', reportController.getAllReports);
 router.get('/projects/:projectId/$', reportController.getReportsByProjectId);
 router.post('/projects/:projectId', reportController.createReport);
+router.delete('/:id', reportController.deleteReport);
+
 
 
 
