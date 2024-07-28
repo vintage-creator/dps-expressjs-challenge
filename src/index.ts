@@ -1,4 +1,4 @@
-import express, { Express } from 'express';
+import express, { Express, Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import { authenticate } from './middleware/authMiddleware';
@@ -17,8 +17,16 @@ const initializeMiddleware = (app: Express) => {
   app.use(authenticate); 
 };
 
-initializeMiddleware(app);
+// Error handling middleware
+const initializeErrorHandling = (app: Express) => {
+  app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    console.error(err.stack);
+    res.status(500).json({ error: 'Internal Server Error' });
+  });
+};
 
+initializeMiddleware(app);
+initializeErrorHandling(app);
 
 
 app.listen(port, () => {
