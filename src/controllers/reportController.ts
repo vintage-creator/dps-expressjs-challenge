@@ -92,3 +92,34 @@ export const updateReport = (req: Request, res: Response) => {
 		res.status(500).json({ error: 'Failed to update report' });
 	}
 };
+
+export const getReportsWithRepeatedWords = (req: Request, res: Response) => {
+	try {
+		const sql = 'SELECT * FROM Reports';
+		const reports = db.query(sql) as {
+			id: number;
+			text: string;
+			projectid: number;
+		}[];
+
+		const filteredReports = reports.filter((report: { text: string }) => {
+			//Processing report
+			const wordCounts = report.text
+				.split(/\s+/)
+				.reduce((acc: { [key: string]: number }, word: string) => {
+					word = word.toLowerCase().replace(/[^\w]/g, '');
+					acc[word] = (acc[word] || 0) + 1;
+					return acc;
+				}, {});
+
+			const hasThreeOrMoreOccurrences = Object.values(wordCounts).some(
+				(count) => count >= 3,
+			);
+			return hasThreeOrMoreOccurrences;
+		});
+
+		res.status(200).json(filteredReports);
+	} catch (error) {
+		res.status(500).json({ error: 'Failed to fetch reports' });
+	}
+};

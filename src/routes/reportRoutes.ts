@@ -9,9 +9,6 @@ router.post('/projects/:projectId', reportController.createReport);
 router.delete('/:id', reportController.deleteReport);
 router.get('/single/:id', reportController.getReportById);
 router.put('/:id', reportController.updateReport);
+router.get('/repeated-words', reportController.getReportsWithRepeatedWords);
 
-
-
-
-
-export default router;
+export default router;
